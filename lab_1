@@ -1,0 +1,125 @@
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+using namespace std;
+
+struct punto {
+    int x, y, n;
+    punto(int _n, int _x, int _y) {
+        n = _n;
+        x = _x;
+        y = _y;
+    }
+    void print() {
+        cout << "punto " << n << ": " << x << "," << y << endl;
+    }
+};
+
+int dis_puntos(punto* p1, punto* p2) {
+    int dx = p2->x - p1->x;
+    int dy = p2->y - p1->y;
+    return dx * dx + dy * dy;
+}
+
+int partition_x(punto* p[], int low, int high) {
+    int pivot = p[high]->x;
+    int i = (low - 1);
+    for (int j = low; j <= high - 1; j++) {
+        if (p[j]->x <= pivot) {
+            i++;
+            swap(p[i], p[j]);
+        }
+    }
+    swap(p[i + 1], p[high]);
+    return (i + 1);
+}
+
+void quickSort_x(punto* p[], int low, int high) {
+    if (low < high) {
+        int pi = partition_x(p, low, high);
+        quickSort_x(p, low, pi - 1);
+        quickSort_x(p, pi + 1, high);
+    }
+}
+
+int partition_y(punto* p[], int low, int high) {
+    int pivot = p[high]->y;
+    int i = (low - 1);
+    for (int j = low; j <= high - 1; j++) {
+        if (p[j]->y <= pivot) {
+            i++;
+            swap(p[i], p[j]);
+        }
+    }
+    swap(p[i + 1], p[high]);
+    return (i + 1);
+}
+
+void quickSort_y(punto* p[], int low, int high) {
+    if (low < high) {
+        int pi = partition_y(p, low, high);
+        quickSort_y(p, low, pi - 1);
+        quickSort_y(p, pi + 1, high);
+    }
+}
+
+int closest_pair(punto* p[], punto* temp[], int left, int right) {
+    if (right - left <= 3) {
+        int min_d = INT_MAX;
+        for (int i = left; i <= right; ++i)
+            for (int j = i + 1; j <= right; ++j)
+                min_d = min(min_d, dis_puntos(p[i], p[j]));
+        return min_d;
+    }
+
+    int mid = (left + right) / 2;
+    int x_mid = p[mid]->x;
+
+    int d1 = closest_pair(p, temp, left, mid);
+    int d2 = closest_pair(p, temp, mid + 1, right);
+    int dis = min(d1, d2);
+
+    int L = 0;
+    for (int i = left; i <= right; ++i) {
+        if ((p[i]->x - x_mid) * (p[i]->x - x_mid) < dis) {
+            temp[L++] = p[i];
+        }
+    }
+
+    quickSort_y(temp, 0, L - 1);
+
+    for (int i = 0; i < L; ++i) {
+        for (int j = i + 1; j < L && (temp[j]->y - temp[i]->y) * (temp[j]->y - temp[i]->y) < dis; ++j) {
+            dis = min(dis, dis_puntos(temp[i], temp[j]));
+        }
+    }
+
+    return dis;
+}
+
+int main() {
+    int tam = 20;
+    punto* pv[20];
+    punto* temp[20];
+
+    for (int i = 0; i < tam; i++) {
+        pv[i] = new punto(i, rand() % 50, rand() % 50);
+    }
+
+    cout << "Puntos:" << endl;
+    for (int i = 0; i < tam; i++) {
+        pv[i]->print();
+    }
+
+    quickSort_x(pv, 0, tam - 1);
+
+    cout << "Puntos ordenados por X:" << endl;
+    for (int i = 0; i < tam; i++) {
+        pv[i]->print();
+    }
+
+    int distanciaMinima2 = closest_pair(pv, temp, 0, tam - 1);
+    cout << "La distancia minima es: " << sqrt(distanciaMinima2) << endl;
+
+    return 0;
+}
