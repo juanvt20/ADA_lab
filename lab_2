@@ -1,0 +1,74 @@
+/*Alumnos:
+-Samuel Alexander Imán Quispe
+- Juan Victor Tejeda Cruz
+*/
+
+#include <iostream>
+using namespace std;
+
+int suma = 0;
+
+int partition(int vec[], int low, int high) {
+
+    int pivot = vec[high];
+
+    int i = (low - 1);
+
+    for (int j = low; j <= high - 1; j++) {
+
+        if (vec[j] <= pivot) {
+            i++;
+            swap(vec[i], vec[j]);
+        }
+    }
+
+    swap(vec[i + 1], vec[high]);
+
+    return (i + 1);
+}
+
+void quickSort(int vec[], int low, int high) {
+
+    if (low < high) {
+
+        int pi = partition(vec, low, high);
+
+        quickSort(vec, low, pi - 1);
+        quickSort(vec, pi + 1, high);
+    }
+}
+
+int retiro(int monedas[], int tam) {
+int suma = 0;
+int contador = 0;
+for (int i = 0; i <= tam - 2;i++) {
+if (suma + monedas[i] < monedas[i + 1]) {
+contador++;
+suma += monedas[i];
+}
+}
+contador++;
+return contador;
+}
+
+int main() {
+int nmonedas;
+int tam = 0;
+cout << "n monedas: ";
+cin >> nmonedas;
+int *monedas = new int[nmonedas];
+for (int i = 0; i < nmonedas; i++) {
+cout << "monedas: ";
+cin >> monedas[i];
+tam++;
+}
+quickSort(monedas,0,tam-1);
+cout << endl;
+for (int i = 0; i < nmonedas; i++) {
+cout <<monedas[i] << " ";
+}
+cout << endl;
+
+cout << retiro(monedas, tam);
+return 0;
+}
