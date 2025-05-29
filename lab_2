@@ -6,8 +6,6 @@
 #include <iostream>
 using namespace std;
 
-int suma = 0;
-
 int partition(int vec[], int low, int high) {
 
     int pivot = vec[high];
@@ -39,16 +37,16 @@ void quickSort(int vec[], int low, int high) {
 }
 
 int retiro(int monedas[], int tam) {
-int suma = 0;
-int contador = 0;
-for (int i = 0; i <= tam - 2;i++) {
-if (suma + monedas[i] < monedas[i + 1]) {
-contador++;
-suma += monedas[i];
-}
-}
-contador++;
-return contador;
+    int suma = 0;
+    int contador = 0;
+    for (int i = 0; i <= tam - 2;i++) {
+        if (suma + monedas[i] < monedas[i + 1]) {
+            contador++;
+            suma += monedas[i];
+        }
+    }
+    contador++;
+    return contador;
 }
 
 int main() {
