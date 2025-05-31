@@ -62,14 +62,30 @@ int max_cont(nodo v[], int k, int tam) {
 }
 
 int max_carga(nodo v[], int k, int tam) {
-	int sum = 0;
-	int i = tam-1;
-	for (; i > 0; i--) {
-		if (sum + v[i].peso <= k) {
-			sum += v[i].peso;
+	int sum = v[tam-1].peso;
+	int sump;
+	int sump2 = 0;
+	int j = tam - 2;
+	while (j >= 0) {
+		sump = 0;
+		for (int i = j;i >= 0;i--) {
+			if (sump + v[i].peso < k - sum) {
+				sump += v[i].peso;
+			}
+			else if (sump + v[i].peso == k - sum) {
+				sump += v[i].peso;
+				return sum + sump;
+			}
+			else {
+				break;
+			}
 		}
+		if (sump > sump2) {
+			sump2 = sump;
+		}
+		j--;
 	}
-	return sum;
+	return sump2;
 }
 
 int main() {
@@ -94,7 +110,7 @@ int main() {
 	}
 
 	 cout << "numero de contenedores maximo: " << max_cont(f, peso_buque, tam) << endl;
-	 cout << "maximo de carga: " << max_carga(f, peso_buque, tam);
+	 cout << "maximo de carga: " << max_carga(f, peso_buque, tam) << endl;
 
 	return 0;
 }
